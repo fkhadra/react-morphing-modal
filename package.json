@@ -10,7 +10,9 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test --env=jsdom"
+    "test": "tsdx test --env=jsdom",
+    "sass": "node-sass scss/main.scss dist/ReactFancyModal.css",
+    "postsass": "postcss dist/ReactFancyModal.css --use autoprefixer -m -o dist/ReactFancyModal.css"
   },
   "peerDependencies": {
     "react": ">=16"
@@ -30,7 +32,10 @@
     "@types/jest": "^24.0.15",
     "@types/react": "^16.8.22",
     "@types/react-dom": "^16.8.4",
+    "autoprefixer": "^9.6.0",
     "husky": "^2.7.0",
+    "node-sass": "^4.12.0",
+    "postcss-cli": "^6.1.2",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
     "react": "^16.8.6",
