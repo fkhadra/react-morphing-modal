@@ -1,0 +1,13 @@
+.#{$rfm-namespace}__content {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  padding: 40px 20%;
+  z-index: #{$rfm-base} + 1;
+  opacity: 0;
+  transition: opacity #{$rfm-transition-duration};
+
+  &--is-active {
+    opacity: 1;
+  }
+}
