@@ -1,20 +1,32 @@
 import { useRef, useState } from 'react';
-import { getNodePostion, getScaleValues, getBackgroundFromStyle, bodyScrolling } from './utils';
+import {
+  getNodePostion,
+  getScaleValues,
+  getBackgroundFromStyle,
+  bodyScrolling,
+} from './utils';
 
 export interface ModalOptions {
   background?: string;
 }
 
-export const STATE = {
+type StateValues = 0 | 1 | 2;
+
+type ModalState = Record<
+  'IS_CLOSE' | 'IS_IN_PROGRESS' | 'IS_OPEN',
+  StateValues
+>;
+
+export const STATE: ModalState = {
   IS_CLOSE: 0,
-  IS_IN_PROGRESS: 1 << 1,
-  IS_OPEN: 1 << 2
+  IS_IN_PROGRESS: 1,
+  IS_OPEN: 2,
 };
 
 export function useModal(options: ModalOptions = {}) {
   const triggerRef = useRef<HTMLElement>();
-  const placeholderRef = useRef<HTMLElement>();
-  const [status, setState] = useState(STATE.IS_CLOSE);
+  const placeholderRef = useRef<HTMLDivElement>();
+  const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);
 
   function handleEscapeKey(e: KeyboardEvent) {
     if (e.keyCode === 27) close();
@@ -26,27 +38,19 @@ export function useModal(options: ModalOptions = {}) {
       const trigger = triggerRef.current;
       const triggerStyles = window.getComputedStyle(trigger);
       const placeholderPosition = getNodePostion(trigger);
-      const background =  options.background || getBackgroundFromStyle(triggerStyles);
-      
+      const background =
+        options.background || getBackgroundFromStyle(triggerStyles);
+
       bodyScrolling.lock();
       document.addEventListener('keyup', handleEscapeKey, { once: true });
 
-      placeholder.style.cssText += `width: ${trigger.offsetWidth}px; height: ${
-        trigger.offsetHeight
-      }px; background: ${background};`;
+      placeholder.style.cssText += `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background};`;
 
       setState(STATE.IS_IN_PROGRESS);
 
-      const placeholderScale = getScaleValues(
-        placeholder,
-        placeholderPosition
-      );
+      const placeholderScale = getScaleValues(placeholder, placeholderPosition);
 
-      placeholderRef.current.style.cssText += `top: ${
-        placeholderPosition.top
-      }px; left: ${placeholderPosition.left}px; transform: scale(${
-        placeholderScale.scaleX
-      },${placeholderScale.scaleY});`;
+      placeholderRef.current.style.cssText += `top: ${placeholderPosition.top}px; left: ${placeholderPosition.left}px; transform: scale(${placeholderScale.scaleX},${placeholderScale.scaleY});`;
 
       placeholder.addEventListener(
         'transitionend',
@@ -83,8 +87,8 @@ export function useModal(options: ModalOptions = {}) {
     close,
     modalProps: {
       placeholderRef,
-      status,
-      close
-    }
+      state,
+      close,
+    },
   };
 }
