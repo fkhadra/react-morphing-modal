@@ -1,0 +1,8 @@
+.#{$namespace}__placeholder {
+  position: fixed;
+  z-index: map-get($z-index, 'placeholder');
+  top: 0;
+  left: 0;
+  transition-property: transform, opacity, background-color;
+  transition-duration: $transition-duration;
+}

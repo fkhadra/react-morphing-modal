@@ -1,4 +1,17 @@
-$rfm-namespace: 'Fancy';
+$namespace: 'RFM';
+$transition-duration: 0.365s;
 
-$rfm-z-index: 9999 !default;
-$rfm-transition-duration: 0.365s;
+// generate z-index per component
+$base-z-index: 9999;
+$component-list: placeholder body closeButton;
+$z-index: ();
+
+@each $component in $component-list {
+  $base-z-index: $base-z-index + 1;
+  $z-index: map-merge(
+    $z-index,
+    (
+      $component: $base-z-index,
+    )
+  );
+}

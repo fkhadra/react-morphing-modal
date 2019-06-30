@@ -12,7 +12,8 @@
     "build": "tsdx build",
     "test": "tsdx test --env=jsdom",
     "sass": "node-sass scss/main.scss dist/ReactFancyModal.css",
-    "postsass": "postcss dist/ReactFancyModal.css --use autoprefixer -m -o dist/ReactFancyModal.css"
+    "postsass": "postcss dist/ReactFancyModal.css --use autoprefixer -m -o dist/ReactFancyModal.css",
+    "style": "npm run sass"
   },
   "peerDependencies": {
     "react": ">=16"
