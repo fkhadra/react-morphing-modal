@@ -10,7 +10,7 @@ export interface ModalOptions {
   background?: string;
 }
 
-type StateValues = 0 | 1 | 2;
+export type StateValues = 0 | 1 | 2;
 
 type ModalState = Record<
   'IS_CLOSE' | 'IS_IN_PROGRESS' | 'IS_OPEN',
