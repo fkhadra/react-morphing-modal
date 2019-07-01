@@ -29,13 +29,20 @@ export const bodyScrolling = {
   },
 };
 
-// Fallback for ff
 export function getBackgroundFromDOM(styles: CSSStyleDeclaration): string {
+  // work for chrome but not ff
   if (styles.background && styles.background.length > 0) {
     return styles.background;
   }
 
-  if (styles.backgroundImage && styles.backgroundImage.length > 0) {
+  // inline style in ff return none.
+  // I could put styles.backgroundColor here so I don't need to check for none
+  // but I don't want to rely on call order
+  if (
+    styles.backgroundImage &&
+    styles.backgroundImage.length > 0 &&
+    styles.backgroundImage !== 'none'
+  ) {
     return styles.backgroundImage;
   }
 
