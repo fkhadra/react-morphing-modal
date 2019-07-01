@@ -30,7 +30,7 @@ export const bodyScrolling = {
 };
 
 // Fallback for ff
-export function getBackgroundFromStyle(styles: CSSStyleDeclaration): string {
+export function getBackgroundFromDOM(styles: CSSStyleDeclaration): string {
   if (styles.background && styles.background.length > 0) {
     return styles.background;
   }
