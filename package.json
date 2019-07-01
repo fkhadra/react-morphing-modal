@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build && npm run style",
     "test": "tsdx test --env=jsdom",
     "sass": "node-sass scss/main.scss dist/ReactFancyModal.css",
     "postsass": "postcss dist/ReactFancyModal.css --use autoprefixer -m -o dist/ReactFancyModal.css",
