@@ -68,12 +68,12 @@ export function getScaleValues(
     scaleX: computeCoordinateScaleValue(
       position.left,
       node.offsetWidth,
-      document.documentElement.clientWidth
+      window.innerWidth
     ),
     scaleY: computeCoordinateScaleValue(
       position.top,
       node.offsetHeight,
-      document.documentElement.clientHeight
+      window.innerHeight
     ),
   };
 }
