@@ -7,7 +7,15 @@ import '../dist/ReactFancyModal.css';
 import './index.css';
 
 const App = () => {
-  const { modalProps, open, triggerRef } = useModal();
+  const {
+    modalProps,
+    open,
+    triggerRef,
+    triggerProps,
+    multiTriggerProps,
+  } = useModal({
+    event: 'onClick',
+  });
   return (
     <div>
       <div className="card">
@@ -17,14 +25,23 @@ const App = () => {
             <b>John Doe</b>
           </h4>
           <div className="action">
-            <span>Engineer</span>
-            <button ref={triggerRef as any} onClick={open}>
+            <span>Lorem Ipsum</span>
+            <button {...triggerProps}>Read More</button>
+            <button
+              {...multiTriggerProps('foo')}
+              style={{ backgroundColor: 'purple', borderRadius: '12px' }}
+            >
               Read More
             </button>
           </div>
         </div>
+        <button className="fab" {...multiTriggerProps('baz')}>
+          F
+        </button>
       </div>
-      <Modal {...modalProps}>hello good morning</Modal>
+      <Modal {...modalProps}>
+        {modalProps.activeModal === 'foo' ? 'bar' : 'plop'}
+      </Modal>
     </div>
   );
 };
