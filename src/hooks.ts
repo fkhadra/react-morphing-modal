@@ -66,9 +66,27 @@ export function useModal(options: ModalOptions = {}): UseModal {
   function handleEscapeKey(e: KeyboardEvent) {
     if (e.keyCode === 27) close();
   }
+  // maybe throttle later if needed
+  function handleResize() {
+    console.log('mpu');
+    requestAnimationFrame(updatePlaceholder);
+  }
+
+  function updatePlaceholder() {
+    const trigger = activeTriggerRef.current.current;
+    if (placeholderRef.current && trigger) {
+      const placeholderStyle = getPlaceholderComputedStyle(
+        trigger,
+        placeholderRef.current
+      );
+      placeholderRef.current.style.cssText += placeholderStyle;
+    }
+  }
 
   function open(triggerRef: React.MutableRefObject<any>, id?: ModalId) {
     activeTriggerRef.current = triggerRef;
+    console.log('open');
+
     if (placeholderRef.current && triggerRef.current) {
       const placeholder = placeholderRef.current;
       const trigger = triggerRef.current;
@@ -77,7 +95,9 @@ export function useModal(options: ModalOptions = {}): UseModal {
       const borderRadius = getBorderRadius(triggerStyles);
 
       bodyScrolling.lock();
+
       document.addEventListener('keyup', handleEscapeKey);
+      window.addEventListener('resize', handleResize);
 
       placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background}; ${borderRadius}`;
 
@@ -104,11 +124,12 @@ export function useModal(options: ModalOptions = {}): UseModal {
   }
 
   function close() {
+    console.log('close');
     if (placeholderRef.current) {
       const placeholder = placeholderRef.current;
       setState(STATE.IS_IN_PROGRESS);
-
       document.removeEventListener('keyup', handleEscapeKey);
+      window.removeEventListener('resize', handleResize);
       bodyScrolling.unlock();
       placeholder.style.removeProperty('transform');
       placeholder.style.transform = 'scale(1,1);';
@@ -116,6 +137,8 @@ export function useModal(options: ModalOptions = {}): UseModal {
       placeholder.addEventListener(
         'transitionend',
         () => {
+          console.log('transend');
+
           setState(STATE.IS_CLOSE);
           setActiveModal(null);
         },
