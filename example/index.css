@@ -2,37 +2,31 @@
   box-sizing: border-box;
 }
 
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  width: 40%;
-  margin: auto;
+html {
+  font-family: monospace;
+  font-size: 16px;
+}
+
+body {
+  background-image: linear-gradient(
+    225deg,
+    #141414 0%,
+    #2a2231 50%,
+    #2b86c5 100%
+  );
 }
 
 img {
   width: 100%;
+  height: auto;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-}
-
-.container {
-  padding: 2px 16px;
-}
-
-.action {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 8px;
-}
-
-.action > button {
-  width: 140px;
-  height: 36px;
-  border: none;
-  background-color: pink;
+input,
+label,
+h2 {
+  color: #fff;
 }
 
 .fab {
@@ -43,5 +37,140 @@ img {
   height: 50px;
   border-radius: 50%;
   font-size: 32px;
-  background: red;
+  background: #666;
+  border: none;
+}
+
+.btn-group {
+  text-align: center;
+  margin: auto;
+  padding: 8rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.btn {
+  color: #fff;
+  cursor: pointer;
+  width: 146px;
+  height: 46px;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.btn__register {
+  background: #209cee;
+  transition: transform 0.3s;
+}
+
+.btn__register:hover {
+  transform: scale(1.02);
+}
+
+.btn__cancel {
+  background: #ff1f4b;
+}
+
+.btn__submit {
+  background: #23d160;
+}
+
+.btn__projects {
+  background-image: linear-gradient(90deg, #00dbde 0%, #fc00ff 100%);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  min-width: 300px;
+  min-height: 3;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+.register-form h2 {
+  text-align: center;
+}
+
+.register-form__btn-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-form label {
+  margin-bottom: 1rem;
+}
+
+.register-form input {
+  border: none;
+  height: 2.25rem;
+  margin-bottom: 2rem;
+  background: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 1rem;
+}
+
+.projects article {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+.projects img {
+  transition: transform 0.3s;
+}
+
+.projects img:hover {
+  transform: scale(1.05);
+}
+
+/* Fork me banner */
+
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out;
+}
+
+.github-corner svg {
+  fill: #64ceaa;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  border: 0;
+  left: 0;
+  transform: scale(-1, 1);
+}
+
+.octo-arm {
+  transform-origin: 130px 106px;
+}
+
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+
+  20%,
+  60% {
+    transform: rotate(-25deg);
+  }
+
+  40%,
+  80% {
+    transform: rotate(10deg);
+  }
+}
+
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none;
+  }
+
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+  }
 }

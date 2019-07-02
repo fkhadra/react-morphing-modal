@@ -1,47 +1,56 @@
 import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+
 import { useModal, Modal } from '../.';
+import { RegisterForm, Projects, ForkMe, LoremIpsum } from './components';
 
 import '../dist/ReactMorphingModal.css';
 import './index.css';
 
 const App = () => {
-  const {
-    modalProps,
-    open,
-    triggerRef,
-    triggerProps,
-    multiTriggerProps,
-  } = useModal({
+  const { modalProps, multiTriggerProps, close } = useModal({
     event: 'onClick',
   });
+
+  let componentToRender: React.ReactNode;
+
+  switch (modalProps.activeModal) {
+    case 'registerForm':
+      componentToRender = <RegisterForm closeModal={close} />;
+      break;
+    case 'projects':
+      componentToRender = <Projects />;
+      break;
+    default:
+      componentToRender = <LoremIpsum />;
+      break;
+  }
+
   return (
     <div>
-      <div className="card">
-        <img src="https://picsum.photos/300" alt="Avatar" />
-        <div className="container">
-          <h4>
-            <b>John Doe</b>
-          </h4>
-          <div className="action">
-            <span>Lorem Ipsum</span>
-            <button {...triggerProps}>Read More</button>
-            <button
-              {...multiTriggerProps('foo')}
-              style={{ backgroundColor: 'purple', borderRadius: '12px' }}
-            >
-              Read More
-            </button>
-          </div>
-        </div>
-        <button className="fab" {...multiTriggerProps('baz')}>
-          F
+      <ForkMe />
+      <div className="btn-group">
+        <button
+          {...multiTriggerProps('registerForm')}
+          className="btn btn__register"
+        >
+          📜Register
+        </button>
+        <button
+          {...multiTriggerProps('projects')}
+          className="btn btn__projects"
+        >
+          🐙 Projects
         </button>
       </div>
-      <Modal {...modalProps}>
-        {modalProps.activeModal === 'foo' ? 'bar' : 'plop'}
-      </Modal>
+      <button className="fab" {...multiTriggerProps()}>
+        <span>✌️</span>
+      </button>
+      <Modal {...modalProps}>{componentToRender}</Modal>
+      <ToastContainer />
     </div>
   );
 };
