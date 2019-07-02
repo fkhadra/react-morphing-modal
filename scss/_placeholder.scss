@@ -3,6 +3,6 @@
   z-index: map-get($z-index, 'placeholder');
   top: 0;
   left: 0;
-  transition-property: transform, opacity, background-color;
+  transition-property: transform, opacity;
   transition-duration: $transition-duration;
 }
