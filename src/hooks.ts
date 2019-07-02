@@ -47,7 +47,7 @@ export function useModal(options: ModalOptions = {}) {
       const borderRadius = getBorderRadius(triggerStyles);
 
       bodyScrolling.lock();
-      document.addEventListener('keyup', handleEscapeKey, { once: true });
+      document.addEventListener('keyup', handleEscapeKey);
 
       placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background}; ${borderRadius}`;
 
@@ -81,6 +81,7 @@ export function useModal(options: ModalOptions = {}) {
       const placeholder = placeholderRef.current;
       setState(STATE.IS_IN_PROGRESS);
 
+      document.removeEventListener('keyup', handleEscapeKey);
       bodyScrolling.unlock();
       placeholder.style.removeProperty('transform');
       placeholder.style.transform = 'scale(1,1);';
