@@ -2,9 +2,10 @@ import { useRef, useState, DOMAttributes } from 'react';
 import {
   getNodePostion,
   getScaleValues,
-  getBackgroundFromDOM,
+  getBackground,
   bodyScrolling,
-} from './utils';
+  getBorderRadius,
+} from './DOMutils';
 
 export interface ModalOptions {
   background?: string;
@@ -42,13 +43,13 @@ export function useModal(options: ModalOptions = {}) {
       const trigger = activeRef.current;
       const triggerStyles = window.getComputedStyle(trigger);
       const placeholderPosition = getNodePostion(trigger);
-      const background =
-        options.background || getBackgroundFromDOM(triggerStyles);
+      const background = options.background || getBackground(triggerStyles);
+      const borderRadius = getBorderRadius(triggerStyles);
 
       bodyScrolling.lock();
       document.addEventListener('keyup', handleEscapeKey, { once: true });
 
-      placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background};`;
+      placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background}; ${borderRadius}`;
 
       if (id) {
         setActiveModal(id);
@@ -57,8 +58,13 @@ export function useModal(options: ModalOptions = {}) {
       setState(STATE.IS_IN_PROGRESS);
 
       const placeholderScale = getScaleValues(placeholder, placeholderPosition);
-
-      placeholderRef.current.style.cssText += `top: ${placeholderPosition.top}px; left: ${placeholderPosition.left}px; transform: scale(${placeholderScale.scaleX},${placeholderScale.scaleY});`;
+      // 👽1.5 to handle circle and rounded border
+      placeholder.style.cssText += `
+        top: ${placeholderPosition.top}px;
+        left: ${placeholderPosition.left}px;
+        transform: scale(${placeholderScale.scaleX *
+          1.5},${placeholderScale.scaleY * 1.5});
+      `;
 
       placeholder.addEventListener(
         'transitionend',

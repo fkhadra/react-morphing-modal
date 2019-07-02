@@ -29,8 +29,23 @@ export const bodyScrolling = {
   },
 };
 
-export function getBackgroundFromDOM(styles: CSSStyleDeclaration): string {
-  // work for chrome but not ff
+export function getBorderRadius(styles: CSSStyleDeclaration): string {
+  const {
+    borderTopLeftRadius,
+    borderTopRightRadius,
+    borderBottomLeftRadius,
+    borderBottomRightRadius,
+  } = styles;
+  return `
+    border-top-left-radius: ${borderTopLeftRadius};
+    border-top-right-radius: ${borderTopRightRadius};
+    border-bottom-left-radius: ${borderBottomLeftRadius};
+    border-bottom-right-radius: ${borderBottomRightRadius};
+  `;
+}
+
+export function getBackground(styles: CSSStyleDeclaration): string {
+  // work for chrome only. firefox do not return shorthand prop
   if (styles.background && styles.background.length > 0) {
     return styles.background;
   }
