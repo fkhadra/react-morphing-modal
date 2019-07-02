@@ -1,13 +1,15 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, DOMAttributes } from 'react';
 import {
   getNodePostion,
   getScaleValues,
-  getBackgroundFromStyle,
+  getBackground,
   bodyScrolling,
-} from './utils';
+  getBorderRadius,
+} from './DOMutils';
 
 export interface ModalOptions {
   background?: string;
+  event?: keyof DOMAttributes<HTMLElement>;
 }
 
 export type StateValues = 0 | 1 | 2;
@@ -24,33 +26,45 @@ export const STATE: ModalState = {
 };
 
 export function useModal(options: ModalOptions = {}) {
-  const triggerRef = useRef<HTMLElement>();
+  const triggerRef = useRef<any>();
   const placeholderRef = useRef<HTMLDivElement>();
+  const [activeModal, setActiveModal] = useState(null);
   const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);
+  const event = options.event || 'onClick';
 
   function handleEscapeKey(e: KeyboardEvent) {
     if (e.keyCode === 27) close();
   }
 
-  function open() {
-    if (placeholderRef.current && triggerRef.current) {
+  function open(ref?: typeof triggerRef, id?: any) {
+    const activeRef = ref || triggerRef;
+    if (placeholderRef.current && activeRef.current) {
       const placeholder = placeholderRef.current;
-      const trigger = triggerRef.current;
+      const trigger = activeRef.current;
       const triggerStyles = window.getComputedStyle(trigger);
       const placeholderPosition = getNodePostion(trigger);
-      const background =
-        options.background || getBackgroundFromStyle(triggerStyles);
+      const background = options.background || getBackground(triggerStyles);
+      const borderRadius = getBorderRadius(triggerStyles);
 
       bodyScrolling.lock();
       document.addEventListener('keyup', handleEscapeKey, { once: true });
 
-      placeholder.style.cssText += `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background};`;
+      placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background}; ${borderRadius}`;
+
+      if (id) {
+        setActiveModal(id);
+      }
 
       setState(STATE.IS_IN_PROGRESS);
 
       const placeholderScale = getScaleValues(placeholder, placeholderPosition);
-
-      placeholderRef.current.style.cssText += `top: ${placeholderPosition.top}px; left: ${placeholderPosition.left}px; transform: scale(${placeholderScale.scaleX},${placeholderScale.scaleY});`;
+      // 👽1.5 to handle circle and rounded border
+      placeholder.style.cssText += `
+        top: ${placeholderPosition.top}px;
+        left: ${placeholderPosition.left}px;
+        transform: scale(${placeholderScale.scaleX *
+          1.5},${placeholderScale.scaleY * 1.5});
+      `;
 
       placeholder.addEventListener(
         'transitionend',
@@ -75,6 +89,7 @@ export function useModal(options: ModalOptions = {}) {
         'transitionend',
         () => {
           setState(STATE.IS_CLOSE);
+          setActiveModal(null);
         },
         { once: true }
       );
@@ -83,11 +98,23 @@ export function useModal(options: ModalOptions = {}) {
 
   return {
     triggerRef,
+    triggerProps: {
+      ref: triggerRef,
+      [event]: open.bind(null, triggerRef),
+    },
+    multiTriggerProps(id?: any) {
+      const ref = useRef<any>();
+      return {
+        ref,
+        [event]: open.bind(null, ref, id),
+      };
+    },
     open,
     close,
     modalProps: {
       placeholderRef,
       state,
+      activeModal,
       close,
     },
   };

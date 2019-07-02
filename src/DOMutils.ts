@@ -29,13 +29,35 @@ export const bodyScrolling = {
   },
 };
 
-// Fallback for ff
-export function getBackgroundFromStyle(styles: CSSStyleDeclaration): string {
+export function getBorderRadius(styles: CSSStyleDeclaration): string {
+  const {
+    borderTopLeftRadius,
+    borderTopRightRadius,
+    borderBottomLeftRadius,
+    borderBottomRightRadius,
+  } = styles;
+  return `
+    border-top-left-radius: ${borderTopLeftRadius};
+    border-top-right-radius: ${borderTopRightRadius};
+    border-bottom-left-radius: ${borderBottomLeftRadius};
+    border-bottom-right-radius: ${borderBottomRightRadius};
+  `;
+}
+
+export function getBackground(styles: CSSStyleDeclaration): string {
+  // work for chrome only. firefox do not return shorthand prop
   if (styles.background && styles.background.length > 0) {
     return styles.background;
   }
 
-  if (styles.backgroundImage && styles.backgroundImage.length > 0) {
+  // inline style in ff return none.
+  // I could put styles.backgroundColor here so I don't need to check for none
+  // but I don't want to rely on call order
+  if (
+    styles.backgroundImage &&
+    styles.backgroundImage.length > 0 &&
+    styles.backgroundImage !== 'none'
+  ) {
     return styles.backgroundImage;
   }
 
@@ -61,12 +83,12 @@ export function getScaleValues(
     scaleX: computeCoordinateScaleValue(
       position.left,
       node.offsetWidth,
-      document.documentElement.clientWidth
+      window.innerWidth
     ),
     scaleY: computeCoordinateScaleValue(
       position.top,
       node.offsetHeight,
-      document.documentElement.clientHeight
+      window.innerHeight
     ),
   };
 }
