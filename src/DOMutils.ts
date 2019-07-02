@@ -20,6 +20,21 @@ function computeCoordinateScaleValue(
   return Math.ceil(scaleValue * 10) / 10;
 }
 
+function getScaleValues(node: HTMLElement, top: number, left: number) {
+  return {
+    scaleX: computeCoordinateScaleValue(
+      left,
+      node.offsetWidth,
+      window.innerWidth
+    ),
+    scaleY: computeCoordinateScaleValue(
+      top,
+      node.offsetHeight,
+      window.innerHeight
+    ),
+  };
+}
+
 export const bodyScrolling = {
   lock() {
     getBodyNode().style.overflow = 'hidden';
@@ -28,6 +43,23 @@ export const bodyScrolling = {
     getBodyNode().style.removeProperty('overflow');
   },
 };
+
+export function getPlaceholderComputedStyle(
+  trigger: HTMLElement,
+  placeholder: HTMLElement
+) {
+  const top = trigger.offsetTop - window.scrollY;
+  const left = trigger.offsetLeft - window.scrollX;
+  const placeholderScale = getScaleValues(placeholder, top, left);
+
+  // 👽1.5 to handle circle and rounded border
+  return `
+  top: ${top}px;
+  left: ${left}px;
+  transform: scale(${placeholderScale.scaleX * 1.5},${placeholderScale.scaleY *
+    1.5});
+`;
+}
 
 export function getBorderRadius(styles: CSSStyleDeclaration): string {
   const {
@@ -66,29 +98,4 @@ export function getBackground(styles: CSSStyleDeclaration): string {
   }
 
   return '';
-}
-
-export function getNodePostion(node: HTMLElement) {
-  return {
-    top: node.offsetTop - window.scrollY,
-    left: node.offsetLeft - window.scrollX,
-  };
-}
-
-export function getScaleValues(
-  node: HTMLElement,
-  position: { top: number; left: number }
-) {
-  return {
-    scaleX: computeCoordinateScaleValue(
-      position.left,
-      node.offsetWidth,
-      window.innerWidth
-    ),
-    scaleY: computeCoordinateScaleValue(
-      position.top,
-      node.offsetHeight,
-      window.innerHeight
-    ),
-  };
 }

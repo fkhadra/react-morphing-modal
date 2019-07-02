@@ -1,10 +1,9 @@
 import { useRef, useState, DOMAttributes } from 'react';
 import {
-  getNodePostion,
-  getScaleValues,
   getBackground,
   bodyScrolling,
   getBorderRadius,
+  getPlaceholderComputedStyle,
 } from './DOMutils';
 
 // maybe there is a better interface for my use case
@@ -59,6 +58,7 @@ export const STATE: ModalState = {
 
 export function useModal(options: ModalOptions = {}): UseModal {
   const placeholderRef = useRef<HTMLDivElement>();
+  const activeTriggerRef = useRef<any>();
   const [activeModal, setActiveModal] = useState<ModalId>(null);
   const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);
   const event = options.event || 'onClick';
@@ -67,13 +67,12 @@ export function useModal(options: ModalOptions = {}): UseModal {
     if (e.keyCode === 27) close();
   }
 
-  function open(ref: React.MutableRefObject<any>, id?: ModalId) {
-    const activeRef = ref;
-    if (placeholderRef.current && activeRef.current) {
+  function open(triggerRef: React.MutableRefObject<any>, id?: ModalId) {
+    activeTriggerRef.current = triggerRef;
+    if (placeholderRef.current && triggerRef.current) {
       const placeholder = placeholderRef.current;
-      const trigger = activeRef.current;
+      const trigger = triggerRef.current;
       const triggerStyles = window.getComputedStyle(trigger);
-      const placeholderPosition = getNodePostion(trigger);
       const background = options.background || getBackground(triggerStyles);
       const borderRadius = getBorderRadius(triggerStyles);
 
@@ -88,14 +87,11 @@ export function useModal(options: ModalOptions = {}): UseModal {
 
       setState(STATE.IS_IN_PROGRESS);
 
-      const placeholderScale = getScaleValues(placeholder, placeholderPosition);
-      // 👽1.5 to handle circle and rounded border
-      placeholder.style.cssText += `
-        top: ${placeholderPosition.top}px;
-        left: ${placeholderPosition.left}px;
-        transform: scale(${placeholderScale.scaleX *
-          1.5},${placeholderScale.scaleY * 1.5});
-      `;
+      const placeholderStyle = getPlaceholderComputedStyle(
+        trigger,
+        placeholder
+      );
+      placeholder.style.cssText += placeholderStyle;
 
       placeholder.addEventListener(
         'transitionend',
