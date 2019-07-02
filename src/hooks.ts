@@ -7,17 +7,49 @@ import {
   getBorderRadius,
 } from './DOMutils';
 
+// maybe there is a better interface for my use case
+export type DOMEvent = keyof DOMAttributes<HTMLElement>;
+
 export interface ModalOptions {
   background?: string;
-  event?: keyof DOMAttributes<HTMLElement>;
+  event?: DOMEvent;
 }
 
+export interface TriggerProps {
+  ref: React.MutableRefObject<any>;
+  [x: string]: React.MutableRefObject<any> | (() => void);
+}
+
+// 0 -> close
+// 1 -> opening in progress
+// 2 -> open
 export type StateValues = 0 | 1 | 2;
 
-type ModalState = Record<
+export type ModalId = string | number | symbol | null;
+
+export type TriggerPropsOptions = {
+  id?: ModalId;
+  event?: DOMEvent;
+};
+
+export type ModalState = Record<
   'IS_CLOSE' | 'IS_IN_PROGRESS' | 'IS_OPEN',
   StateValues
 >;
+
+export interface UseModal {
+  triggerProps: {
+    (id?: ModalId): TriggerProps;
+    (options?: TriggerPropsOptions): TriggerProps;
+  };
+  close: () => void;
+  activeModal: ModalId;
+  modalProps: {
+    placeholderRef: React.MutableRefObject<HTMLDivElement | undefined>;
+    state: StateValues;
+    close: () => void;
+  };
+}
 
 export const STATE: ModalState = {
   IS_CLOSE: 0,
@@ -25,10 +57,9 @@ export const STATE: ModalState = {
   IS_OPEN: 2,
 };
 
-export function useModal(options: ModalOptions = {}) {
-  const triggerRef = useRef<any>();
+export function useModal(options: ModalOptions = {}): UseModal {
   const placeholderRef = useRef<HTMLDivElement>();
-  const [activeModal, setActiveModal] = useState(null);
+  const [activeModal, setActiveModal] = useState<ModalId>(null);
   const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);
   const event = options.event || 'onClick';
 
@@ -36,8 +67,8 @@ export function useModal(options: ModalOptions = {}) {
     if (e.keyCode === 27) close();
   }
 
-  function open(ref?: typeof triggerRef, id?: any) {
-    const activeRef = ref || triggerRef;
+  function open(ref: React.MutableRefObject<any>, id?: ModalId) {
+    const activeRef = ref;
     if (placeholderRef.current && activeRef.current) {
       const placeholder = placeholderRef.current;
       const trigger = activeRef.current;
@@ -98,24 +129,32 @@ export function useModal(options: ModalOptions = {}) {
   }
 
   return {
-    triggerRef,
-    triggerProps: {
-      ref: triggerRef,
-      [event]: open.bind(null, triggerRef),
-    },
-    multiTriggerProps(id?: any) {
+    triggerProps(param?: ModalId | TriggerPropsOptions) {
+      let id;
+      let evt = event;
+
+      if (
+        typeof param === 'number' ||
+        typeof param === 'string' ||
+        typeof param === 'symbol'
+      ) {
+        id = param;
+      } else if (typeof param === 'object' && param !== null) {
+        id = param.id;
+        evt = param.event || event;
+      }
+
       const ref = useRef<any>();
       return {
         ref,
-        [event]: open.bind(null, ref, id),
+        [evt]: open.bind(null, ref, id),
       };
     },
-    open,
     close,
+    activeModal,
     modalProps: {
       placeholderRef,
       state,
-      activeModal,
       close,
     },
   };
