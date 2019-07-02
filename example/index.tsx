@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { useModal, Modal } from '../.';
 
-import '../dist/ReactFancyModal.css';
+import '../dist/ReactMorphingModal.css';
 import './index.css';
 
 const App = () => {

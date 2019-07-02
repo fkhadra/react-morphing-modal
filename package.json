@@ -1,8 +1,8 @@
 {
-  "name": "react-fancy-modal",
+  "name": "react-morphing-modal",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "module": "dist/react-fancy-modal.esm.js",
+  "module": "dist/react-morphing-modal.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist"
@@ -11,8 +11,8 @@
     "start": "tsdx watch",
     "build": "tsdx build && npm run style",
     "test": "tsdx test --env=jsdom",
-    "sass": "node-sass scss/main.scss dist/ReactFancyModal.css",
-    "postsass": "postcss dist/ReactFancyModal.css --use autoprefixer -m -o dist/ReactFancyModal.css",
+    "sass": "node-sass scss/main.scss dist/ReactMorphingModal.css",
+    "postsass": "postcss dist/ReactMorphingModal.css --use autoprefixer -m -o dist/ReactMorphingModal.css",
     "style": "npm run sass"
   },
   "peerDependencies": {
