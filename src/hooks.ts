@@ -1,4 +1,4 @@
-import { useRef, useState, DOMAttributes } from 'react';
+import { useRef, useState, DOMAttributes, useEffect } from 'react';
 import {
   getBackground,
   bodyScrolling,
@@ -66,9 +66,9 @@ export function useModal(options: ModalOptions = {}): UseModal {
   function handleEscapeKey(e: KeyboardEvent) {
     if (e.keyCode === 27) close();
   }
+
   // maybe throttle later if needed
   function handleResize() {
-    console.log('mpu');
     requestAnimationFrame(updatePlaceholder);
   }
 
@@ -83,9 +83,19 @@ export function useModal(options: ModalOptions = {}): UseModal {
     }
   }
 
+  useEffect(() => {
+    if (state !== STATE.IS_CLOSE) {
+      document.addEventListener('keyup', handleEscapeKey);
+      window.addEventListener('resize', handleResize);
+    }
+    return () => {
+      document.removeEventListener('keyup', handleEscapeKey);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [state]);
+
   function open(triggerRef: React.MutableRefObject<any>, id?: ModalId) {
     activeTriggerRef.current = triggerRef;
-    console.log('open');
 
     if (placeholderRef.current && triggerRef.current) {
       const placeholder = placeholderRef.current;
@@ -95,9 +105,6 @@ export function useModal(options: ModalOptions = {}): UseModal {
       const borderRadius = getBorderRadius(triggerStyles);
 
       bodyScrolling.lock();
-
-      document.addEventListener('keyup', handleEscapeKey);
-      window.addEventListener('resize', handleResize);
 
       placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background}; ${borderRadius}`;
 
@@ -128,8 +135,7 @@ export function useModal(options: ModalOptions = {}): UseModal {
     if (placeholderRef.current) {
       const placeholder = placeholderRef.current;
       setState(STATE.IS_IN_PROGRESS);
-      document.removeEventListener('keyup', handleEscapeKey);
-      window.removeEventListener('resize', handleResize);
+
       bodyScrolling.unlock();
       placeholder.style.removeProperty('transform');
       placeholder.style.transform = 'scale(1,1);';
