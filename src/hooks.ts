@@ -131,7 +131,6 @@ export function useModal(options: ModalOptions = {}): UseModal {
   }
 
   function close() {
-    console.log('close');
     if (placeholderRef.current) {
       const placeholder = placeholderRef.current;
       setState(STATE.IS_IN_PROGRESS);
@@ -143,8 +142,6 @@ export function useModal(options: ModalOptions = {}): UseModal {
       placeholder.addEventListener(
         'transitionend',
         () => {
-          console.log('transend');
-
           setState(STATE.IS_CLOSE);
           setActiveModal(null);
         },
