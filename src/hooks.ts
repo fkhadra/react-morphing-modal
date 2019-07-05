@@ -44,7 +44,7 @@ export interface UseModal {
   close: () => void;
   activeModal: ModalId;
   modalProps: {
-    placeholderRef: React.MutableRefObject<HTMLDivElement | undefined>;
+    placeholderRef: React.MutableRefObject<HTMLDivElement | null>;
     state: StateValues;
     close: () => void;
   };
@@ -57,7 +57,7 @@ export const STATE: ModalState = {
 };
 
 export function useModal(options: ModalOptions = {}): UseModal {
-  const placeholderRef = useRef<HTMLDivElement>();
+  const placeholderRef = useRef<HTMLDivElement>(null);
   const activeTriggerRef = useRef<any>();
   const [activeModal, setActiveModal] = useState<ModalId>(null);
   const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);

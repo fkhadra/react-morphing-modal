@@ -5,7 +5,7 @@ import { STATE } from './hooks';
 
 export interface ModalProps {
   state: number;
-  placeholderRef: React.MutableRefObject<HTMLDivElement>;
+  placeholderRef: React.MutableRefObject<HTMLDivElement | null>;
   close: () => void;
   closeButton?: boolean;
   padding?: boolean;
