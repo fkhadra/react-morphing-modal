@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   padding,
 }) => {
-  const bodyPadding = !padding ? ` ${cx.body + cx.noPadding}` : '';
+  const bodyPadding = !padding ? ` ${cx.noBodyPadding}` : '';
   return (
     <div
       className={cx.get(
