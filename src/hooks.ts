@@ -64,7 +64,8 @@ export function useModal(options: ModalOptions = {}): UseModal {
   const event = options.event || 'onClick';
 
   function handleEscapeKey(e: KeyboardEvent) {
-    if (e.keyCode === 27) close();
+    const key = e.key || e.keyCode;
+    if (key === 'Escape' || key === 'Esc' || key === 27) close();
   }
 
   // maybe throttle later if needed
