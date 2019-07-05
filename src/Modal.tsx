@@ -8,7 +8,7 @@ export interface ModalProps {
   placeholderRef: React.MutableRefObject<HTMLDivElement>;
   close: () => void;
   closeButton?: boolean;
-  padding: boolean;
+  padding?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
