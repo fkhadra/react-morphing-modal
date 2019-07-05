@@ -85,11 +85,11 @@ export function useModal(options: ModalOptions = {}): UseModal {
 
   useEffect(() => {
     if (state !== STATE.IS_CLOSE) {
-      document.addEventListener('keyup', handleEscapeKey);
+      document.addEventListener('keydown', handleEscapeKey);
       window.addEventListener('resize', handleResize);
     }
     return () => {
-      document.removeEventListener('keyup', handleEscapeKey);
+      document.removeEventListener('keydown', handleEscapeKey);
       window.removeEventListener('resize', handleResize);
     };
   }, [state]);
