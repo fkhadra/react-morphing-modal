@@ -7,7 +7,7 @@ const App: React.FC<{ closeButton?: boolean; padding?: boolean }> = ({
   closeButton,
   padding,
 }) => {
-  const { triggerProps, modalProps } = useModal();
+  const { triggerProps, modalProps, close } = useModal();
 
   return (
     <div>
@@ -23,6 +23,9 @@ const App: React.FC<{ closeButton?: boolean; padding?: boolean }> = ({
       <button data-testid="trigger-with-double-click" {...triggerProps()}>
         trigger with double click
       </button>
+      <button data-testid="close-modal" onClick={close}>
+        close modal
+      </button>
       <Modal {...modalProps} closeButton={closeButton} padding={padding} />
     </div>
   );
@@ -36,8 +39,12 @@ App.defaultProps = {
 afterEach(cleanup);
 
 function openModal(container: HTMLElement, getByTestId: any) {
-  const placeholder = container.querySelector('.RMM__placeholder');
   fireEvent.click(getByTestId('trigger'));
+  triggerTransitionEnd(container);
+}
+
+function triggerTransitionEnd(container: HTMLElement) {
+  const placeholder = container.querySelector('.RMM__placeholder');
   fireEvent.transitionEnd(placeholder!);
 }
 
@@ -80,5 +87,39 @@ describe('Morphing modal', () => {
 
     openModal(container, getByTestId);
     expect(container.querySelector('.RMM__close-button')).toBe(null);
+  });
+
+  describe('Close Modal', () => {
+    it('should close the modal when the close button is clicked', () => {
+      const { container, getByTestId } = render(<App />);
+
+      openModal(container, getByTestId);
+      fireEvent.click(container.querySelector('.RMM__close-button')!);
+      triggerTransitionEnd(container);
+
+      expect(container.querySelector('.RMM__body--is-active')).toBe(null);
+    });
+
+    it('should close the modal when esc key is pressed', () => {
+      const { container, getByTestId } = render(<App />);
+      openModal(container, getByTestId);
+
+      fireEvent.keyDown(document.body, {
+        key: 'Escape',
+        keyCode: 27,
+        code: 27,
+      });
+      triggerTransitionEnd(container);
+      expect(container.querySelector('.RMM__body--is-active')).toBe(null);
+    });
+
+    it('should be possible to close the modal programmatically', () => {
+      const { container, getByTestId } = render(<App />);
+      openModal(container, getByTestId);
+      fireEvent.click(getByTestId('close-modal'));
+      triggerTransitionEnd(container);
+
+      expect(container.querySelector('.RMM__body--is-active')).toBe(null);
+    });
   });
 });
