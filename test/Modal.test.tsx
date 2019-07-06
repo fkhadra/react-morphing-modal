@@ -38,14 +38,27 @@ App.defaultProps = {
 
 afterEach(cleanup);
 
-function openModal(container: HTMLElement, getByTestId: any) {
-  fireEvent.click(getByTestId('trigger'));
+function openModal(
+  container: HTMLElement,
+  getByTestId: any,
+  triggerId: string = 'trigger'
+) {
+  assertModalIsClosed(container);
+  fireEvent.click(getByTestId(triggerId));
   triggerTransitionEnd(container);
 }
 
 function triggerTransitionEnd(container: HTMLElement) {
   const placeholder = container.querySelector('.RMM__placeholder');
   fireEvent.transitionEnd(placeholder!);
+}
+
+function assertModalIsOpen(container: HTMLElement) {
+  expect(container.querySelector('.RMM__body--is-active')).not.toBe(null);
+}
+
+function assertModalIsClosed(container: HTMLElement) {
+  expect(container.querySelector('.RMM__body--is-active')).toBe(null);
 }
 
 describe('Morphing modal', () => {
@@ -57,24 +70,20 @@ describe('Morphing modal', () => {
 
   it('should be hidden on initial load', () => {
     const { container } = render(<App />);
-    expect(container.querySelector('.RMM__container--is-active')).toBe(null);
+    assertModalIsClosed(container);
   });
 
   it('should display the modal when the trigger is clicked', () => {
     const { container, getByTestId } = render(<App />);
 
-    expect(container.querySelector('.RMM__container--is-active')).toBe(null);
-    expect(container.querySelector('.RMM__body--is-active')).toBe(null);
-
     openModal(container, getByTestId);
-
-    expect(container.querySelector('.RMM__body--is-active')).not.toBe(null);
+    assertModalIsOpen(container);
   });
 
   it('should display a close button by default', () => {
     const { container, getByTestId } = render(<App />);
-    expect(container.querySelector('.RMM__close-button--is-active')).toBe(null);
 
+    expect(container.querySelector('.RMM__close-button--is-active')).toBe(null);
     openModal(container, getByTestId);
     expect(container.querySelector('.RMM__close-button--is-active')).not.toBe(
       null
@@ -83,8 +92,16 @@ describe('Morphing modal', () => {
 
   it('should be possible to disable the close button', () => {
     const { container, getByTestId } = render(<App closeButton={false} />);
-    expect(container.querySelector('.RMM__close-button')).toBe(null);
 
+    expect(container.querySelector('.RMM__close-button')).toBe(null);
+    openModal(container, getByTestId);
+    expect(container.querySelector('.RMM__close-button')).toBe(null);
+  });
+
+  it('should be possible to use multiple trigger for the same modal', () => {
+    const { container, getByTestId } = render(<App closeButton={false} />);
+
+    expect(container.querySelector('.RMM__close-button')).toBe(null);
     openModal(container, getByTestId);
     expect(container.querySelector('.RMM__close-button')).toBe(null);
   });
@@ -97,7 +114,7 @@ describe('Morphing modal', () => {
       fireEvent.click(container.querySelector('.RMM__close-button')!);
       triggerTransitionEnd(container);
 
-      expect(container.querySelector('.RMM__body--is-active')).toBe(null);
+      assertModalIsClosed(container);
     });
 
     it('should close the modal when esc key is pressed', () => {
@@ -110,16 +127,16 @@ describe('Morphing modal', () => {
         code: 27,
       });
       triggerTransitionEnd(container);
-      expect(container.querySelector('.RMM__body--is-active')).toBe(null);
+      assertModalIsClosed(container);
     });
 
     it('should be possible to close the modal programmatically', () => {
       const { container, getByTestId } = render(<App />);
+
       openModal(container, getByTestId);
       fireEvent.click(getByTestId('close-modal'));
       triggerTransitionEnd(container);
-
-      expect(container.querySelector('.RMM__body--is-active')).toBe(null);
+      assertModalIsClosed(container);
     });
   });
 });
