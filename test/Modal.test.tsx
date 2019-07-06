@@ -7,7 +7,7 @@ const App: React.FC<{ closeButton?: boolean; padding?: boolean }> = ({
   closeButton,
   padding,
 }) => {
-  const { triggerProps, modalProps, close } = useModal();
+  const { triggerProps, modalProps, close, activeModal } = useModal();
 
   return (
     <div>
@@ -20,12 +20,16 @@ const App: React.FC<{ closeButton?: boolean; padding?: boolean }> = ({
       <button data-testid="trigger-with-id" {...triggerProps('foobar')}>
         trigger with id
       </button>
-      <button data-testid="trigger-with-double-click" {...triggerProps()}>
+      <button
+        data-testid="trigger-with-double-click"
+        {...triggerProps({ event: 'onDoubleClick' })}
+      >
         trigger with double click
       </button>
       <button data-testid="close-modal" onClick={close}>
         close modal
       </button>
+      <span data-testid="modal-id">{activeModal}</span>
       <Modal {...modalProps} closeButton={closeButton} padding={padding} />
     </div>
   );
@@ -46,6 +50,7 @@ function openModal(
   assertModalIsClosed(container);
   fireEvent.click(getByTestId(triggerId));
   triggerTransitionEnd(container);
+  assertModalIsOpen(container);
 }
 
 function triggerTransitionEnd(container: HTMLElement) {
@@ -99,11 +104,30 @@ describe('Morphing modal', () => {
   });
 
   it('should be possible to use multiple trigger for the same modal', () => {
-    const { container, getByTestId } = render(<App closeButton={false} />);
+    const { container, getByTestId } = render(<App />);
 
-    expect(container.querySelector('.RMM__close-button')).toBe(null);
+    // test with 'trigger'
     openModal(container, getByTestId);
-    expect(container.querySelector('.RMM__close-button')).toBe(null);
+    fireEvent.click(container.querySelector('.RMM__close-button')!);
+    triggerTransitionEnd(container);
+    assertModalIsClosed(container);
+    openModal(container, getByTestId, 'trigger2');
+  });
+
+  it('should be possible to define an id for a trigger', () => {
+    const { container, getByTestId } = render(<App />);
+
+    openModal(container, getByTestId, 'trigger-with-id');
+    expect(getByTestId('modal-id').innerHTML).toBe('foobar');
+  });
+
+  it('should be possible to use any DOM event to open the modal. Double-click in that case', () => {
+    const { container, getByTestId } = render(<App />);
+
+    assertModalIsClosed(container);
+    fireEvent.doubleClick(getByTestId('trigger-with-double-click'));
+    triggerTransitionEnd(container);
+    assertModalIsOpen(container);
   });
 
   describe('Close Modal', () => {
