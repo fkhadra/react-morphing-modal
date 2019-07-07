@@ -70,8 +70,8 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
   const [activeModal, setActiveModal] = useState<ModalId>(null);
   const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);
   const event = hookOptions.event || 'onClick';
-  const onOpen = hookOptions.onOpen || noop;
-  const onClose = hookOptions.onClose || noop;
+  const onOpenCallback = hookOptions.onOpen || noop;
+  const onCloseCallback = hookOptions.onClose || noop;
 
   function handleEscapeKey(e: KeyboardEvent) {
     const key = e.key || e.keyCode;
@@ -115,9 +115,10 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
       const trigger = triggerRef.current;
       const triggerStyles = window.getComputedStyle(trigger);
       const borderRadius = getBorderRadius(triggerStyles);
-      const background = hookOptions.background || getBackground(triggerStyles);
 
       let modalId: ModalId = null;
+      let background = hookOptions.background || getBackground(triggerStyles);
+      let onOpen = onOpenCallback;
 
       if (
         typeof triggerOptions === 'number' ||
@@ -129,6 +130,9 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
         typeof triggerOptions === 'object' &&
         triggerOptions !== null
       ) {
+        activeTriggerRef.current.options = triggerOptions;
+        background = triggerOptions.background || background;
+        onOpen = triggerOptions.onOpen || onOpenCallback;
       }
 
       bodyScrolling.lock();
@@ -160,7 +164,12 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
 
   function close() {
     if (placeholderRef.current) {
+      const triggerOptions = activeTriggerRef.current.options;
       const placeholder = placeholderRef.current;
+      let onClose =
+        triggerOptions && triggerOptions.onClose
+          ? triggerOptions.onClose
+          : onCloseCallback;
       setState(STATE.IS_IN_PROGRESS);
 
       bodyScrolling.unlock();
