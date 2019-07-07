@@ -130,6 +130,12 @@ describe('Morphing modal', () => {
     assertModalIsOpen(container);
   });
 
+  it('should be possible disable the padding', () => {
+    const { container } = render(<App padding={false} />);
+
+    expect(container.querySelector('.RMM__body--no-padding')).not.toBe(null);
+  });
+
   describe('Close Modal', () => {
     it('should close the modal when the close button is clicked', () => {
       const { container, getByTestId } = render(<App />);
