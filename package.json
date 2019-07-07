@@ -1,6 +1,18 @@
 {
   "name": "react-morphing-modal",
   "version": "0.0.1",
+  "license": "MIT",
+  "description": "React morphing modal! The easiest way to be fancy!",
+  "keywords": [
+    "react",
+    "modal",
+    "dialog",
+    "react-component",
+    "react-morphing-modal",
+    "react-dialog",
+    "react-modal",
+    "morphing"
+  ],
   "main": "dist/index.js",
   "module": "dist/react-morphing-modal.esm.js",
   "typings": "dist/index.d.ts",
