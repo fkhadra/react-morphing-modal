@@ -8,33 +8,36 @@ import {
 
 // maybe there is a better interface for my use case
 export type DOMEvent = keyof DOMAttributes<HTMLElement>;
+export type ModalId = string | number | symbol | null;
+// 0 -> close
+// 1 -> opening in progress
+// 2 -> open
+export type StateValues = 0 | 1 | 2;
 
-export interface ModalOptions {
-  background?: string;
+export interface TriggerPropsOptions {
+  id?: ModalId;
   event?: DOMEvent;
+  onOpen?: () => any;
+  onClose?: () => any;
+  background?: string;
 }
+
+export type HookOptions = Omit<TriggerPropsOptions, 'id'>;
 
 export interface TriggerProps {
   ref: React.MutableRefObject<any>;
   [x: string]: React.MutableRefObject<any> | (() => void);
 }
 
-// 0 -> close
-// 1 -> opening in progress
-// 2 -> open
-export type StateValues = 0 | 1 | 2;
-
-export type ModalId = string | number | symbol | null;
-
-export type TriggerPropsOptions = {
-  id?: ModalId;
-  event?: DOMEvent;
-};
-
 export type ModalState = Record<
   'IS_CLOSE' | 'IS_IN_PROGRESS' | 'IS_OPEN',
   StateValues
 >;
+
+export type ActiveTriggerRef = {
+  nodeRef: React.MutableRefObject<any> | null;
+  options?: TriggerPropsOptions | null;
+};
 
 export interface UseModal {
   triggerProps: {
@@ -56,12 +59,19 @@ export const STATE: ModalState = {
   IS_OPEN: 2,
 };
 
-export function useModal(options: ModalOptions = {}): UseModal {
+const noop = () => {};
+
+export function useModal(hookOptions: HookOptions = {}): UseModal {
   const placeholderRef = useRef<HTMLDivElement>(null);
-  const activeTriggerRef = useRef<any>();
+  const activeTriggerRef = useRef<ActiveTriggerRef>({
+    nodeRef: null,
+    options: null,
+  });
   const [activeModal, setActiveModal] = useState<ModalId>(null);
   const [state, setState] = useState<StateValues>(STATE.IS_CLOSE);
-  const event = options.event || 'onClick';
+  const event = hookOptions.event || 'onClick';
+  const onOpen = hookOptions.onOpen || noop;
+  const onClose = hookOptions.onClose || noop;
 
   function handleEscapeKey(e: KeyboardEvent) {
     const key = e.key || e.keyCode;
@@ -74,7 +84,7 @@ export function useModal(options: ModalOptions = {}): UseModal {
   }
 
   function updatePlaceholder() {
-    const trigger = activeTriggerRef.current.current;
+    const trigger = activeTriggerRef.current.nodeRef!.current;
     if (placeholderRef.current && trigger) {
       const placeholderStyle = getPlaceholderComputedStyle(
         trigger,
@@ -95,22 +105,38 @@ export function useModal(options: ModalOptions = {}): UseModal {
     };
   }, [state]);
 
-  function open(triggerRef: React.MutableRefObject<any>, id?: ModalId) {
-    activeTriggerRef.current = triggerRef;
-
+  function open(
+    triggerRef: React.MutableRefObject<any>,
+    triggerOptions?: ModalId | TriggerPropsOptions
+  ) {
+    activeTriggerRef.current.nodeRef = triggerRef;
     if (placeholderRef.current && triggerRef.current) {
       const placeholder = placeholderRef.current;
       const trigger = triggerRef.current;
       const triggerStyles = window.getComputedStyle(trigger);
-      const background = options.background || getBackground(triggerStyles);
       const borderRadius = getBorderRadius(triggerStyles);
+      const background = hookOptions.background || getBackground(triggerStyles);
+
+      let modalId: ModalId = null;
+
+      if (
+        typeof triggerOptions === 'number' ||
+        typeof triggerOptions === 'string' ||
+        typeof triggerOptions === 'symbol'
+      ) {
+        modalId = triggerOptions;
+      } else if (
+        typeof triggerOptions === 'object' &&
+        triggerOptions !== null
+      ) {
+      }
 
       bodyScrolling.lock();
 
       placeholder.style.cssText = `width: ${trigger.offsetWidth}px; height: ${trigger.offsetHeight}px; background: ${background}; ${borderRadius}`;
 
-      if (id) {
-        setActiveModal(id);
+      if (modalId) {
+        setActiveModal(modalId);
       }
 
       setState(STATE.IS_IN_PROGRESS);
@@ -124,6 +150,7 @@ export function useModal(options: ModalOptions = {}): UseModal {
       placeholder.addEventListener(
         'transitionend',
         () => {
+          onOpen();
           setState(STATE.IS_OPEN);
         },
         { once: true }
@@ -143,6 +170,7 @@ export function useModal(options: ModalOptions = {}): UseModal {
       placeholder.addEventListener(
         'transitionend',
         () => {
+          onClose();
           setState(STATE.IS_CLOSE);
           setActiveModal(null);
         },
@@ -152,25 +180,13 @@ export function useModal(options: ModalOptions = {}): UseModal {
   }
 
   return {
-    triggerProps(param?: ModalId | TriggerPropsOptions) {
-      let id;
-      let evt = event;
-
-      if (
-        typeof param === 'number' ||
-        typeof param === 'string' ||
-        typeof param === 'symbol'
-      ) {
-        id = param;
-      } else if (typeof param === 'object' && param !== null) {
-        id = param.id;
-        evt = param.event || event;
-      }
-
+    triggerProps(options?: ModalId | TriggerPropsOptions) {
       const ref = useRef<any>();
       return {
         ref,
-        [evt]: open.bind(null, ref, id),
+        [typeof options === 'object' && options !== null && options.event
+          ? options.event
+          : event]: open.bind(null, ref, options),
       };
     },
     close,
