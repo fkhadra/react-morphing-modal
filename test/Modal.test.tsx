@@ -3,12 +3,21 @@ import * as ReactDOM from 'react-dom';
 import { Modal, useModal } from '../src';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 
-const App: React.FC<{ closeButton?: boolean; padding?: boolean }> = ({
+interface AppProps {
+  closeButton?: boolean;
+  padding?: boolean;
+  mockOnOpen?: jest.Mock;
+  mockOnClose?: jest.Mock;
+}
+
+const App: React.FC<AppProps> = ({
   closeButton,
   padding,
+  mockOnOpen,
+  mockOnClose,
 }) => {
   const { triggerProps, modalProps, close, activeModal } = useModal();
-
+  const noop = () => {};
   return (
     <div>
       <button data-testid="trigger" {...triggerProps()}>
@@ -18,6 +27,15 @@ const App: React.FC<{ closeButton?: boolean; padding?: boolean }> = ({
         trigger 2
       </button>
       <button data-testid="trigger-with-id" {...triggerProps('foobar')}>
+        trigger with id
+      </button>
+      <button
+        data-testid="trigger-with-callback"
+        {...triggerProps({
+          onOpen: mockOnOpen || noop,
+          onClose: mockOnClose || noop,
+        })}
+      >
         trigger with id
       </button>
       <button
@@ -51,6 +69,12 @@ function openModal(
   fireEvent.click(getByTestId(triggerId));
   triggerTransitionEnd(container);
   assertModalIsOpen(container);
+}
+
+function closeModalUsingTheCloseButton(container: HTMLElement) {
+  fireEvent.click(container.querySelector('.RMM__close-button')!);
+  triggerTransitionEnd(container);
+  assertModalIsClosed(container);
 }
 
 function triggerTransitionEnd(container: HTMLElement) {
@@ -108,10 +132,9 @@ describe('Morphing modal', () => {
 
     // test with 'trigger'
     openModal(container, getByTestId);
-    fireEvent.click(container.querySelector('.RMM__close-button')!);
-    triggerTransitionEnd(container);
-    assertModalIsClosed(container);
+    closeModalUsingTheCloseButton(container);
     openModal(container, getByTestId, 'trigger2');
+    closeModalUsingTheCloseButton(container);
   });
 
   it('should be possible to define an id for a trigger', () => {
@@ -136,15 +159,25 @@ describe('Morphing modal', () => {
     expect(container.querySelector('.RMM__body--no-padding')).not.toBe(null);
   });
 
+  it('should be possible to pass onOpen and onClose callbacks', () => {
+    const mockOnOpen = jest.fn();
+    const mockOnClose = jest.fn();
+    const { container, getByTestId } = render(
+      <App mockOnClose={mockOnClose} mockOnOpen={mockOnOpen} />
+    );
+
+    openModal(container, getByTestId, 'trigger-with-callback');
+    expect(mockOnOpen).toHaveBeenCalled();
+    closeModalUsingTheCloseButton(container);
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
   describe('Close Modal', () => {
     it('should close the modal when the close button is clicked', () => {
       const { container, getByTestId } = render(<App />);
 
       openModal(container, getByTestId);
-      fireEvent.click(container.querySelector('.RMM__close-button')!);
-      triggerTransitionEnd(container);
-
-      assertModalIsClosed(container);
+      closeModalUsingTheCloseButton(container);
     });
 
     it('should close the modal when esc key is pressed', () => {
