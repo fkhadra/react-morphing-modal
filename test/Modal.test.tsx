@@ -8,6 +8,12 @@ interface AppProps {
   padding?: boolean;
   mockOnOpen?: jest.Mock;
   mockOnClose?: jest.Mock;
+  useModalOptions?: {
+    onOpen?: jest.Mock;
+    onClose?: jest.Mock;
+    background?: string;
+    event?: string;
+  };
 }
 
 const App: React.FC<AppProps> = ({
@@ -15,9 +21,12 @@ const App: React.FC<AppProps> = ({
   padding,
   mockOnOpen,
   mockOnClose,
+  useModalOptions = {},
 }) => {
   const noop = () => {};
-  const { triggerProps, modalProps, close, activeModal } = useModal();
+  const { triggerProps, modalProps, close, activeModal } = useModal(
+    useModalOptions as any
+  );
   return (
     <div>
       <button data-testid="trigger" {...triggerProps()}>
@@ -188,6 +197,32 @@ describe('Morphing modal', () => {
     expect(
       placeholder.getAttribute('style')!.includes('background: purple')
     ).toBe(true);
+  });
+
+  it('should be possible to define several options on useModalHook', () => {
+    const mockOnOpen = jest.fn();
+    const mockOnClose = jest.fn();
+    const options = {
+      background: 'purple',
+      onOpen: mockOnOpen,
+      onClose: mockOnClose,
+      event: 'onDoubleClick',
+    };
+    const { container, getByTestId } = render(
+      <App useModalOptions={options} />
+    );
+    const placeholder = container.querySelector('.RMM__placeholder')!;
+
+    assertModalIsClosed(container);
+    fireEvent.doubleClick(getByTestId('trigger'));
+    triggerTransitionEnd(container);
+    assertModalIsOpen(container);
+    expect(
+      placeholder.getAttribute('style')!.includes('background: purple')
+    ).toBe(true);
+    expect(mockOnOpen).toHaveBeenCalled();
+    closeModalUsingTheCloseButton(container);
+    expect(mockOnClose).toHaveBeenCalled();
   });
 
   it('should close the modal when the close button is clicked', () => {
