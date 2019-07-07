@@ -16,8 +16,8 @@ const App: React.FC<AppProps> = ({
   mockOnOpen,
   mockOnClose,
 }) => {
-  const { triggerProps, modalProps, close, activeModal } = useModal();
   const noop = () => {};
+  const { triggerProps, modalProps, close, activeModal } = useModal();
   return (
     <div>
       <button data-testid="trigger" {...triggerProps()}>
@@ -30,13 +30,21 @@ const App: React.FC<AppProps> = ({
         trigger with id
       </button>
       <button
+        data-testid="trigger-with-background"
+        {...triggerProps({
+          background: 'purple',
+        })}
+      >
+        trigger with bg
+      </button>
+      <button
         data-testid="trigger-with-callback"
         {...triggerProps({
           onOpen: mockOnOpen || noop,
           onClose: mockOnClose || noop,
         })}
       >
-        trigger with id
+        trigger with callback
       </button>
       <button
         data-testid="trigger-with-double-click"
@@ -172,34 +180,42 @@ describe('Morphing modal', () => {
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  describe('Close Modal', () => {
-    it('should close the modal when the close button is clicked', () => {
-      const { container, getByTestId } = render(<App />);
+  it('should be possible to define a background on a trigger', () => {
+    const { container, getByTestId } = render(<App />);
 
-      openModal(container, getByTestId);
-      closeModalUsingTheCloseButton(container);
+    openModal(container, getByTestId, 'trigger-with-background');
+    const placeholder = container.querySelector('.RMM__placeholder')!;
+    expect(
+      placeholder.getAttribute('style')!.includes('background: purple')
+    ).toBe(true);
+  });
+
+  it('should close the modal when the close button is clicked', () => {
+    const { container, getByTestId } = render(<App />);
+
+    openModal(container, getByTestId);
+    closeModalUsingTheCloseButton(container);
+  });
+
+  it('should close the modal when esc key is pressed', () => {
+    const { container, getByTestId } = render(<App />);
+    openModal(container, getByTestId);
+
+    fireEvent.keyDown(document.body, {
+      key: 'Escape',
+      keyCode: 27,
+      code: 27,
     });
+    triggerTransitionEnd(container);
+    assertModalIsClosed(container);
+  });
 
-    it('should close the modal when esc key is pressed', () => {
-      const { container, getByTestId } = render(<App />);
-      openModal(container, getByTestId);
+  it('should be possible to close the modal programmatically', () => {
+    const { container, getByTestId } = render(<App />);
 
-      fireEvent.keyDown(document.body, {
-        key: 'Escape',
-        keyCode: 27,
-        code: 27,
-      });
-      triggerTransitionEnd(container);
-      assertModalIsClosed(container);
-    });
-
-    it('should be possible to close the modal programmatically', () => {
-      const { container, getByTestId } = render(<App />);
-
-      openModal(container, getByTestId);
-      fireEvent.click(getByTestId('close-modal'));
-      triggerTransitionEnd(container);
-      assertModalIsClosed(container);
-    });
+    openModal(container, getByTestId);
+    fireEvent.click(getByTestId('close-modal'));
+    triggerTransitionEnd(container);
+    assertModalIsClosed(container);
   });
 });
