@@ -26,6 +26,7 @@
     "watch-example": "cd example && npm run start",
     "build": "tsdx build && npm run style",
     "test": "tsdx test --env=jsdom",
+    "test:coverage": "npm run test --coverage && cat ./coverage/lcov.info | coveralls",
     "sass": "node-sass-chokidar scss/main.scss dist/ReactMorphingModal.css",
     "postsass": "postcss dist/ReactMorphingModal.css --use autoprefixer -m -o dist/ReactMorphingModal.css",
     "style": "npm run sass"
@@ -51,6 +52,7 @@
     "@types/react-dom": "^16.8.4",
     "autoprefixer": "^9.6.0",
     "concurrently": "^4.1.1",
+    "coveralls": "^3.0.4",
     "husky": "^2.7.0",
     "node-sass-chokidar": "^1.3.5",
     "postcss-cli": "^6.1.2",
