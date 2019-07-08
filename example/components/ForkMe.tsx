@@ -2,7 +2,7 @@ import * as React from 'react';
 
 const ForkMe: React.FC = () => (
   <a
-    href="https://github.com/fkhadra"
+    href="https://github.com/fkhadra/react-morphing-modal"
     target="__blank"
     className="github-corner"
     aria-label="View source on GitHub"
