@@ -131,6 +131,7 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
         triggerOptions !== null
       ) {
         activeTriggerRef.current.options = triggerOptions;
+        modalId = triggerOptions.id || modalId;
         background = triggerOptions.background || background;
         onOpen = triggerOptions.onOpen || onOpenCallback;
       }
