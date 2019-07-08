@@ -2,7 +2,7 @@
   position: relative;
   height: 100%;
   overflow: auto;
-  padding: 6rem 20%;
+  padding: 6rem 15%;
   z-index: map-get($z-index, 'body');
   opacity: 0;
   transition: opacity 0.2s;
