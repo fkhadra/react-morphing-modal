@@ -1,148 +1,331 @@
-# TSDX React User Guide
+# React-Morphing-Modal
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+![Travis (.org)](https://img.shields.io/travis/fkhadra/react-morphing-modal.svg?label=%F0%9F%9A%A7Build&style=for-the-badge)
+![npm](https://img.shields.io/npm/dm/react-morphing-modal.svg?label=%E2%8F%ACdownloads&style=for-the-badge)
+![npm](https://img.shields.io/npm/v/react-morphing-modal.svg?style=for-the-badge)
+![NPM](https://img.shields.io/npm/l/react-morphing-modal.svg?label=%F0%9F%93%9Clicense&style=for-the-badge)
+![Coveralls github](https://img.shields.io/coveralls/github/fkhadra/react-morphing-modal.svg?label=%E2%9B%B1coverage&style=for-the-badge)
+![React Morphing Modal](https://user-images.githubusercontent.com/5574267/60773620-6bafbb80-a108-11e9-8644-fb6002ab6ffe.gif 'React Morphing Modal')
 
-> This TSDX setup is meant for developing React components (not apps!) that can be published to NPM. If you’re looking to build an app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
+- [Demo](#Demo)
+- [Installation](#Installation)
+- [Features](#Features)
+- [Usage](#Usage)
+  - [Basic example](#Basic-example)
+  - [Use different trigger for the same modal](#Use-different-trigger-for-the-same-modal)
+  - [Attribute an id to the trigger](#Attribute-an-id-to-the-trigger)
+  - [Define onOpen and onClose callback](#Define-onOpen-and-onClose-callback)
+    - [Gloabaly](#Gloabaly)
+    - [Per trigger](#Per-trigger)
+  - [Define background](#Define-background)
+    - [Gloabaly](#Gloabaly-1)
+    - [Per trigger](#Per-trigger-1)
+  - [Use another event to trigger the modal](#Use-another-event-to-trigger-the-modal)
+    - [Gloabaly](#Gloabaly-2)
+    - [Per trigger](#Per-trigger-2)
+  - [Hide the close button](#Hide-the-close-button)
+  - [Remove body padding](#Remove-body-padding)
+- [Browser Support](#Browser-Support)
+- [Release Notes](#Release-Notes)
+- [Contribute](#Contribute)
+- [License](#License)
 
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
+## Demo
 
-## Commands
+[Demo time](https://fkhadra.github.io/react-morphing-modal/)
 
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
-
-The recommended workflow is to run TSDX in one terminal:
-
-```
-npm start # or yarn start
-```
-
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
-
-Then run the example inside another:
-
-```
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
-```
-
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, [we use Parcel's aliasing](https://github.com/palmerhq/tsdx/pull/88/files).
-
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is [set up for you](https://github.com/palmerhq/tsdx/pull/45/files) with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`. This runs the test watcher (Jest) in an interactive mode. By default, runs tests related to files changed since the last commit.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
+## Installation
 
 ```
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+$ npm install --save react-morphing-modal
+//or
+$ yarn add react-morphing-modal
 ```
 
-#### React Testing Library
+## Features
 
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
+- Easy to setup for real, you can make it work in less than 10sec! 🚀
+- Super easy to customize 👌
+- Fancy 😎
 
-### Rollup
+## Usage
 
-TSDX uses [Rollup v1.x](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+### Basic example
 
-### TypeScript
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+function App() {
+  const { modalProps, triggerProps } = useModal();
 
-## Continuous Integration
-
-### Travis
-
-_to be completed_
-
-### Circle
-
-_to be completed_
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+  return (
+    <div>
+      <button {...triggerProps()}>Show modal</button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+### Use different trigger for the same modal
 
-## Module Formats
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
-CJS, ESModules, and UMD module formats are supported.
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Using the Playground
-
-```
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
-```
-
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**!
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using https://github.com/sindresorhus/np.
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
+  return (
+    <div>
+      <button {...triggerProps()}>Trigger 1</button>
+      <button {...triggerProps()}>Trigger 2</button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
 ```
 
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+### Attribute an id to the trigger
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
+
+  return (
+    <div>
+      <button {...triggerProps('trigger1')}>Trigger 1</button>
+      <button {...triggerProps('trigger2')}>Trigger 2</button>
+      {/* You can also pass an object  */}
+      <button {...triggerProps({ id: 'trigger3' })}>Trigger 3</button>
+      <span>{activeModal}</span>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+### Define onOpen and onClose callback
+
+#### Gloabaly
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal({
+    onOpen() {
+      console.log('onOpen');
+    },
+    onClose() {
+      console.log('onClose');
+    },
+  });
+
+  return (
+    <div>
+      <button {...triggerProps()}>Trigger</button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+#### Per trigger
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
+
+  return (
+    <div>
+      <button
+        {...triggerProps({
+          onOpen: () => console.log('open'),
+          onClose: () => console.log('close'),
+        })}
+      >
+        Trigger
+      </button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+### Define background
+
+By default, the modal background is the same as the trigger one. However, you are free to define yours.
+
+#### Gloabaly
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal({
+    background: '#666',
+  });
+
+  return (
+    <div>
+      <button {...triggerProps()}>Trigger</button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+#### Per trigger
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
+
+  return (
+    <div>
+      <button
+        {...triggerProps({
+          background: '#666',
+        })}
+      >
+        Trigger
+      </button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+### Use another event to trigger the modal
+
+By default, the `onClick` event is used on the trigger.
+
+#### Gloabaly
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal({
+    event: 'onDoubleClick',
+  });
+
+  return (
+    <div>
+      <button {...triggerProps()}>Trigger</button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+#### Per trigger
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
+
+  return (
+    <div>
+      <button
+        {...triggerProps({
+          event: 'onDoubleClick',
+        })}
+      >
+        Trigger
+      </button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+### Hide the close button
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
+
+  return (
+    <div>
+      <button {...triggerProps()}>Trigger</button>
+      <Modal {...modalProps} closeButton={false}>
+        Hello World
+      </Modal>
+    </div>
+  );
+}
+```
+
+### Remove body padding
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+function App() {
+  const { modalProps, triggerProps, activeModal } = useModal();
+
+  return (
+    <div>
+      <button {...triggerProps()}>Trigger</button>
+      <Modal {...modalProps} padding={false}>
+        Hello World
+      </Modal>
+    </div>
+  );
+}
+```
+
+## Browser Support
+
+| ![IE](https://cloud.githubusercontent.com/assets/398893/3528325/20373e76-078e-11e4-8e3a-1cb86cf506f0.png) | ![Chrome](https://cloud.githubusercontent.com/assets/398893/3528328/23bc7bc4-078e-11e4-8752-ba2809bf5cce.png) | ![Firefox](https://cloud.githubusercontent.com/assets/398893/3528329/26283ab0-078e-11e4-84d4-db2cf1009953.png) | ![Safari](https://cloud.githubusercontent.com/assets/398893/3528331/29df8618-078e-11e4-8e3e-ed8ac738693f.png) | ![Edge](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png) |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| ❌                                                                                                        | ✅                                                                                                            | ✅                                                                                                             | ✅                                                                                                            | TO TEST                                                                                       |
+
+## Release Notes
+
+You can find the release note for the latest release [here](https://github.com/fkhadra/react-morphing-modal/releases/latest)
+
+You can browse them all [here](https://github.com/fkhadra/react-morphing-modal/releases)
+
+## Contribute
+
+Show your ❤️ and support by giving a ⭐. Any suggestions are welcome ! Take a look at the contributing guide.
+
+You can also find me on [reactiflux](https://www.reactiflux.com/). My pseudo is Fadi.
+
+## License
+
+Licensed under MIT

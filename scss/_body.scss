@@ -1,0 +1,17 @@
+.#{$namespace}__body {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  padding: 6rem 20%;
+  z-index: map-get($z-index, 'body');
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  &--is-active {
+    opacity: 1;
+  }
+
+  &--no-padding {
+    padding: 0;
+  }
+}

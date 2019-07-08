@@ -1,0 +1,16 @@
+.#{$namespace}__container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+
+  &--is-active {
+    pointer-events: initial;
+    opacity: 1;
+    visibility: visible;
+  }
+}
