@@ -33,7 +33,8 @@
     "sass": "node-sass-chokidar scss/main.scss dist/ReactMorphingModal.css",
     "postsass": "postcss dist/ReactMorphingModal.css --use autoprefixer -m -o dist/ReactMorphingModal.css",
     "mincss": "cssnano dist/ReactMorphingModal.css dist/ReactMorphingModal.min.css --no-zindex --no-reduceIdents",
-    "style": "npm run sass && npm run mincss"
+    "style": "npm run sass && npm run mincss",
+    "gh-pages": "cd example && npm run deploy"
   },
   "peerDependencies": {
     "react": ">=16"
