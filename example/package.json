@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html",
-    "predeploy": "npm run build",
+    "build": "parcel build index.html --public-url ./react-morphing-modal/",
+    "predeploy": "rimraf dist/* && npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@types/react-dom": "^16.8.4",
     "gh-pages": "^2.0.1",
     "parcel": "^1.12.3",
+    "rimraf": "^2.6.3",
     "typescript": "^3.4.5"
   }
 }
