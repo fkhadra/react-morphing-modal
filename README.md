@@ -13,6 +13,7 @@
   - [Features](#Features)
   - [Usage](#Usage)
     - [Basic example](#Basic-example)
+    - [With a component](#With-a-component)
     - [Use different trigger for the same modal](#Use-different-trigger-for-the-same-modal)
     - [Attribute an id to the trigger](#Attribute-an-id-to-the-trigger)
     - [Define onOpen and onClose callback](#Define-onOpen-and-onClose-callback)
@@ -64,6 +65,27 @@ function App() {
   return (
     <div>
       <button {...triggerProps()}>Show modal</button>
+      <Modal {...modalProps}>Hello World</Modal>
+    </div>
+  );
+}
+```
+
+### With a component
+
+```javascript
+import React from 'react';
+import { useModal, Modal } from 'react-morphing-modal';
+import 'react-morphing-modal/dist/ReactMorphingModal.css';
+
+const Button = props => <button {...props.triggerProps()}>Show modal</button>;
+
+function App() {
+  const { modalProps, triggerProps } = useModal();
+
+  return (
+    <div>
+      <Button triggerProps={triggerProps} />
       <Modal {...modalProps}>Hello World</Modal>
     </div>
   );
