@@ -21,6 +21,7 @@ img {
   height: auto;
   border-radius: 8px;
   cursor: pointer;
+  max-width: 600px;
 }
 
 input,
@@ -92,6 +93,7 @@ h2 {
   padding: 2rem;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 8px;
+  max-width: 475px;
 }
 
 .register-form h2 {
