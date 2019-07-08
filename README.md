@@ -5,6 +5,7 @@
 ![npm](https://img.shields.io/npm/v/react-morphing-modal.svg?style=for-the-badge)
 ![NPM](https://img.shields.io/npm/l/react-morphing-modal.svg?label=%F0%9F%93%9Clicense&style=for-the-badge)
 ![Coveralls github](https://img.shields.io/coveralls/github/fkhadra/react-morphing-modal.svg?label=%E2%9B%B1coverage&style=for-the-badge)
+
 ![React Morphing Modal](https://user-images.githubusercontent.com/5574267/60773620-6bafbb80-a108-11e9-8644-fb6002ab6ffe.gif 'React Morphing Modal')
 
 - [React-Morphing-Modal](#React-Morphing-Modal)
