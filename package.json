@@ -17,19 +17,23 @@
   "module": "dist/react-morphing-modal.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "scss"
   ],
   "scripts": {
     "start": "concurrently -k -p[{name}] -n '🚀 Js,🦄 Style, 🛠 Example' -c 'yellow,magenta,blue' 'npm run watch-js' 'npm run watch-style' 'npm run watch-example'",
     "watch-js": "tsdx watch",
     "watch-style": "node-sass-chokidar scss/main.scss dist/ReactMorphingModal.css --watch --skip-initial",
     "watch-example": "cd example && npm run start",
+    "clean": "rimraf dist/*",
+    "prebuild": "npm run test && npm run clean",
     "build": "tsdx build && npm run style",
     "test": "tsdx test --env=jsdom",
     "test:coverage": "npm run test --coverage && cat ./coverage/lcov.info | coveralls",
     "sass": "node-sass-chokidar scss/main.scss dist/ReactMorphingModal.css",
     "postsass": "postcss dist/ReactMorphingModal.css --use autoprefixer -m -o dist/ReactMorphingModal.css",
-    "style": "npm run sass"
+    "mincss": "cssnano dist/ReactMorphingModal.css dist/ReactMorphingModal.min.css --no-zindex --no-reduceIdents",
+    "style": "npm run sass && npm run mincss"
   },
   "peerDependencies": {
     "react": ">=16"
@@ -53,6 +57,8 @@
     "autoprefixer": "^9.6.0",
     "concurrently": "^4.1.1",
     "coveralls": "^3.0.4",
+    "cssnano": "^4.1.10",
+    "cssnano-cli": "^1.0.5",
     "husky": "^2.7.0",
     "node-sass-chokidar": "^1.3.5",
     "postcss-cli": "^6.1.2",
@@ -60,6 +66,7 @@
     "pretty-quick": "^1.11.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "rimraf": "^2.6.3",
     "tsdx": "^0.7.2",
     "tslib": "^1.10.0",
     "typescript": "^3.5.2"
