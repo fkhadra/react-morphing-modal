@@ -29,7 +29,7 @@
     "prebuild": "npm run test && npm run clean",
     "build": "tsdx build && npm run style",
     "test": "tsdx test --env=jsdom",
-    "test:coverage": "npm run test --coverage && cat ./coverage/lcov.info | coveralls",
+    "test:coverage": "tsdx test --env=jsdom --coverage && cat ./coverage/lcov.info | coveralls",
     "sass": "node-sass-chokidar scss/main.scss dist/ReactMorphingModal.css",
     "postsass": "postcss dist/ReactMorphingModal.css --use autoprefixer -m -o dist/ReactMorphingModal.css",
     "mincss": "postcss dist/ReactMorphingModal.css --use cssnano -o dist/ReactMorphingModal.min.css",
