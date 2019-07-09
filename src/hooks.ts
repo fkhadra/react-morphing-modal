@@ -44,6 +44,10 @@ export interface UseModal {
     (id?: ModalId): TriggerProps;
     (options?: TriggerPropsOptions): TriggerProps;
   };
+  open: (
+    triggerRef: React.MutableRefObject<any>,
+    triggerOptions?: ModalId | TriggerPropsOptions
+  ) => void;
   close: () => void;
   activeModal: ModalId;
   modalProps: {
@@ -199,6 +203,7 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
           : event]: open.bind(null, ref, options),
       };
     },
+    open,
     close,
     activeModal,
     modalProps: {
