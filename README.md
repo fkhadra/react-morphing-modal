@@ -37,7 +37,7 @@
       - [close](#close)
       - [activeModal](#activeModal)
       - [modalProps](#modalProps)
-      - [triggerProps](#triggerProps)
+      - [getTriggerProps](#getTriggerProps)
     - [Modal Component](#Modal-Component)
   - [Browser Support](#Browser-Support)
   - [Release Notes](#Release-Notes)
@@ -64,7 +64,7 @@ $ yarn add react-morphing-modal
 
 ## Usage
 
-> The library expose 2 ways to display the modal: `triggerProps` and `open`. For the basic use case `triggerProps` is fine. But for most of the cases
+> The library expose 2 ways to display the modal: `getTriggerProps` and `open`. For the basic use case `getTriggerProps` is fine. But for most of the cases
 > using `open` is the way to go. Please look at the api for more details.
 
 ### Basic example
@@ -75,11 +75,11 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps } = useModal();
+  const { modalProps, getTriggerProps } = useModal();
 
   return (
     <div>
-      <button {...triggerProps()}>Show modal</button>
+      <button {...getTriggerProps()}>Show modal</button>
       <Modal {...modalProps}>Hello World</Modal>
     </div>
   );
@@ -90,21 +90,23 @@ function App() {
 
 #### Simple case
 
-If you just want to open the modal you can stick with `triggerProps`.
+If you just want to open the modal you can stick with `getTriggerProps`.
 
 ```javascript
 import React from 'react';
 import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
-const Button = props => <button {...props.triggerProps()}>Show modal</button>;
+const Button = props => (
+  <button {...props.getTriggerProps()}>Show modal</button>
+);
 
 function App() {
-  const { modalProps, triggerProps } = useModal();
+  const { modalProps, getTriggerProps } = useModal();
 
   return (
     <div>
-      <Button triggerProps={triggerProps} />
+      <Button getTriggerProps={getTriggerProps} />
       <Modal {...modalProps}>Hello World</Modal>
     </div>
   );
@@ -155,15 +157,15 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal, open } = useModal();
+  const { modalProps, getTriggerProps, activeModal, open } = useModal();
   const triggerRef = useRef(null);
 
   const handleTrigger3 = () => open(triggerRef);
 
   return (
     <div>
-      <button {...triggerProps()}>Trigger 1</button>
-      <button {...triggerProps()}>Trigger 2</button>
+      <button {...getTriggerProps()}>Trigger 1</button>
+      <button {...getTriggerProps()}>Trigger 2</button>
       <button ref={triggerRef} onClick={handleTrigger3}>
         Trigger 3
       </button>
@@ -181,14 +183,14 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal();
+  const { modalProps, getTriggerProps, activeModal } = useModal();
 
   return (
     <div>
-      <button {...triggerProps('trigger1')}>Trigger 1</button>
-      <button {...triggerProps('trigger2')}>Trigger 2</button>
+      <button {...getTriggerProps('trigger1')}>Trigger 1</button>
+      <button {...getTriggerProps('trigger2')}>Trigger 2</button>
       {/* You can also pass an object  */}
-      <button {...triggerProps({ id: 'trigger3' })}>Trigger 3</button>
+      <button {...getTriggerProps({ id: 'trigger3' })}>Trigger 3</button>
       <span>{activeModal}</span>
       <Modal {...modalProps}>Hello World</Modal>
     </div>
@@ -206,7 +208,7 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal({
+  const { modalProps, getTriggerProps, activeModal } = useModal({
     onOpen() {
       console.log('onOpen');
     },
@@ -217,7 +219,7 @@ function App() {
 
   return (
     <div>
-      <button {...triggerProps()}>Trigger</button>
+      <button {...getTriggerProps()}>Trigger</button>
       <Modal {...modalProps}>Hello World</Modal>
     </div>
   );
@@ -232,12 +234,12 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal();
+  const { modalProps, getTriggerProps, activeModal } = useModal();
 
   return (
     <div>
       <button
-        {...triggerProps({
+        {...getTriggerProps({
           onOpen: () => console.log('open'),
           onClose: () => console.log('close'),
         })}
@@ -262,13 +264,13 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal({
+  const { modalProps, getTriggerProps, activeModal } = useModal({
     background: '#666',
   });
 
   return (
     <div>
-      <button {...triggerProps()}>Trigger</button>
+      <button {...getTriggerProps()}>Trigger</button>
       <Modal {...modalProps}>Hello World</Modal>
     </div>
   );
@@ -283,12 +285,12 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal();
+  const { modalProps, getTriggerProps, activeModal } = useModal();
 
   return (
     <div>
       <button
-        {...triggerProps({
+        {...getTriggerProps({
           background: '#666',
         })}
       >
@@ -312,13 +314,13 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal({
+  const { modalProps, getTriggerProps, activeModal } = useModal({
     event: 'onDoubleClick',
   });
 
   return (
     <div>
-      <button {...triggerProps()}>Trigger</button>
+      <button {...getTriggerProps()}>Trigger</button>
       <Modal {...modalProps}>Hello World</Modal>
     </div>
   );
@@ -333,12 +335,12 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal();
+  const { modalProps, getTriggerProps, activeModal } = useModal();
 
   return (
     <div>
       <button
-        {...triggerProps({
+        {...getTriggerProps({
           event: 'onDoubleClick',
         })}
       >
@@ -358,11 +360,11 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal();
+  const { modalProps, getTriggerProps, activeModal } = useModal();
 
   return (
     <div>
-      <button {...triggerProps()}>Trigger</button>
+      <button {...getTriggerProps()}>Trigger</button>
       <Modal {...modalProps} closeButton={false}>
         Hello World
       </Modal>
@@ -379,11 +381,11 @@ import { useModal, Modal } from 'react-morphing-modal';
 import 'react-morphing-modal/dist/ReactMorphingModal.css';
 
 function App() {
-  const { modalProps, triggerProps, activeModal } = useModal();
+  const { modalProps, getTriggerProps, activeModal } = useModal();
 
   return (
     <div>
-      <button {...triggerProps()}>Trigger</button>
+      <button {...getTriggerProps()}>Trigger</button>
       <Modal {...modalProps} padding={false}>
         Hello World
       </Modal>
@@ -401,7 +403,7 @@ function App() {
 ```js
 import { useModal } from 'react-morphing-modal';
 
-const { open, close, activeModal, modalProps, triggerProps } = useModal({
+const { open, close, activeModal, modalProps, getTriggerProps } = useModal({
   event: 'onClick',
   onOpen: () => console.log('will open'),
   onClose: () => console.log('will close'),
@@ -483,15 +485,15 @@ const { modalProps } = useModal();
 <Modal {...modalProps} />;
 ```
 
-#### triggerProps
+#### getTriggerProps
 
-`triggerProps` is a convenient method for the simple use case. Under the hood a ref is created and bound to `open`.
-`triggerProps` has also 2 signatures.
+`getTriggerProps` is a convenient method for the simple use case. Under the hood a ref is created and bound to `open`.
+`getTriggerProps` has also 2 signatures.
 
 ```js
 import { useModal } from 'react-morphing-modal';
 
-const { triggerProps } = useModal();
+const { getTriggerProps } = useModal();
 
 <button {...trigger('modalId')}>trigger</button>;
 <button {...trigger({

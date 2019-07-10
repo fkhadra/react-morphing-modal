@@ -11,9 +11,7 @@ import '../dist/ReactMorphingModal.css';
 import './index.css';
 
 const App = () => {
-  const { close, modalProps, activeModal, triggerProps } = useModal({
-    event: 'onClick',
-  });
+  const { close, modalProps, activeModal, getTriggerProps } = useModal();
 
   let componentToRender: React.ReactNode;
 
@@ -34,16 +32,16 @@ const App = () => {
       <ForkMe />
       <div className="btn-group">
         <button
-          {...triggerProps({ id: 'registerForm' })}
+          {...getTriggerProps({ id: 'registerForm' })}
           className="btn btn__register"
         >
           📜Register
         </button>
-        <button {...triggerProps('projects')} className="btn btn__projects">
+        <button {...getTriggerProps('projects')} className="btn btn__projects">
           🐙 Projects
         </button>
       </div>
-      <button className="fab" {...triggerProps()}>
+      <button className="fab" {...getTriggerProps()}>
         <span>✌️</span>
       </button>
       <Modal {...modalProps}>{componentToRender}</Modal>

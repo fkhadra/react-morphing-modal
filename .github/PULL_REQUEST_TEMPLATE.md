@@ -7,4 +7,4 @@
 5. Run `yarn start` to test your changes in the playground.
 6. Update the readme if needed
 
-**Learn more about contributing [here](https://github.com/fkhadra/react-toastify/blob/master/CONTRIBUTING.md)**
+**Learn more about contributing [here](https://github.com/fkhadra/react-morphing-modal/blob/master/CONTRIBUTING.md)**
