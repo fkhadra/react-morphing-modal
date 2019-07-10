@@ -1,4 +1,4 @@
-import { useRef, useState, DOMAttributes, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   getBackground,
   bodyScrolling,
@@ -6,56 +6,19 @@ import {
   getPlaceholderComputedStyle,
 } from './DOMutils';
 
-// maybe there is a better interface for my use case
-export type DOMEvent = keyof DOMAttributes<HTMLElement>;
-export type ModalId = string | number | symbol | null;
-// 0 -> close
-// 1 -> opening in progress
-// 2 -> open
-export type StateValues = 0 | 1 | 2;
-
-export interface TriggerPropsOptions {
-  id?: ModalId;
-  event?: DOMEvent;
-  onOpen?: () => any;
-  onClose?: () => any;
-  background?: string;
-}
-
-export type HookOptions = Omit<TriggerPropsOptions, 'id'>;
-
-export interface TriggerProps {
-  ref: React.MutableRefObject<any>;
-  [x: string]: React.MutableRefObject<any> | (() => void);
-}
-
-export type ModalState = Record<
-  'IS_CLOSE' | 'IS_IN_PROGRESS' | 'IS_OPEN',
-  StateValues
->;
-
-export type ActiveTriggerRef = {
-  nodeRef: React.MutableRefObject<any> | null;
-  options?: TriggerPropsOptions | null;
-};
-
-export interface UseModal {
-  triggerProps: {
-    (id?: ModalId): TriggerProps;
-    (options?: TriggerPropsOptions): TriggerProps;
-  };
-  open: (
-    triggerRef: React.MutableRefObject<any>,
-    triggerOptions?: ModalId | TriggerPropsOptions
-  ) => void;
-  close: () => void;
-  activeModal: ModalId;
-  modalProps: {
-    placeholderRef: React.MutableRefObject<HTMLDivElement | null>;
-    state: StateValues;
-    close: () => void;
-  };
-}
+import {
+  ModalState,
+  HookOptions,
+  UseModal,
+  ActiveTriggerRef,
+  ModalId,
+  StateValues,
+  TriggerProps,
+  GetTriggerProps,
+  TriggerPropsOptions,
+  OpenModal,
+  CloseModal,
+} from './types';
 
 export const STATE: ModalState = {
   IS_CLOSE: 0,
@@ -109,10 +72,7 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
     };
   }, [state]);
 
-  function open(
-    triggerRef: React.MutableRefObject<any>,
-    triggerOptions?: ModalId | TriggerPropsOptions
-  ) {
+  const open: OpenModal = (triggerRef, triggerOptions) => {
     activeTriggerRef.current.nodeRef = triggerRef;
     if (placeholderRef.current && triggerRef.current) {
       const placeholder = placeholderRef.current;
@@ -165,9 +125,9 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
         { once: true }
       );
     }
-  }
+  };
 
-  function close() {
+  const close: CloseModal = () => {
     if (placeholderRef.current) {
       const triggerOptions = activeTriggerRef.current.options;
       const placeholder = placeholderRef.current;
@@ -191,21 +151,25 @@ export function useModal(hookOptions: HookOptions = {}): UseModal {
         { once: true }
       );
     }
-  }
+  };
+
+  const getTriggerProps: GetTriggerProps = (
+    options?: ModalId | TriggerPropsOptions
+  ): TriggerProps => {
+    const ref = useRef<any>();
+    return {
+      ref,
+      [typeof options === 'object' && options !== null && options.event
+        ? options.event
+        : event]: open.bind(null, ref, options),
+    };
+  };
 
   return {
-    triggerProps(options?: ModalId | TriggerPropsOptions) {
-      const ref = useRef<any>();
-      return {
-        ref,
-        [typeof options === 'object' && options !== null && options.event
-          ? options.event
-          : event]: open.bind(null, ref, options),
-      };
-    },
     open,
     close,
     activeModal,
+    getTriggerProps,
     modalProps: {
       placeholderRef,
       state,

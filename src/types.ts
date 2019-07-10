@@ -35,32 +35,32 @@ export type ActiveTriggerRef = {
   options?: TriggerPropsOptions | null;
 };
 
-export interface TriggerPropsFunction {
+export interface GetTriggerProps {
   (id?: ModalId): TriggerProps;
   (options?: TriggerPropsOptions): TriggerProps;
 }
 
-export interface OpenFunction {
+export interface OpenModal {
   (
     triggerRef: React.MutableRefObject<any>,
     triggerOptions?: ModalId | TriggerPropsOptions
   ): void;
 }
 
-export interface CloseFunction {
+export interface CloseModal {
   (): void;
 }
 
 export interface ModalProps {
   placeholderRef: React.MutableRefObject<HTMLDivElement | null>;
   state: StateValues;
-  close: CloseFunction;
+  close: CloseModal;
 }
 
 export interface UseModal {
-  triggerProps: TriggerPropsFunction;
-  open: OpenFunction;
-  close: CloseFunction;
+  open: OpenModal;
+  close: CloseModal;
   activeModal: ModalId;
   modalProps: ModalProps;
+  getTriggerProps: GetTriggerProps;
 }

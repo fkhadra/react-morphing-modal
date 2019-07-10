@@ -24,23 +24,23 @@ const App: React.FC<AppProps> = ({
   useModalOptions = {},
 }) => {
   const noop = () => {};
-  const { triggerProps, modalProps, close, activeModal } = useModal(
+  const { getTriggerProps, modalProps, close, activeModal } = useModal(
     useModalOptions as any
   );
   return (
     <div>
-      <button data-testid="trigger" {...triggerProps()}>
+      <button data-testid="trigger" {...getTriggerProps()}>
         trigger
       </button>
-      <button data-testid="trigger2" {...triggerProps()}>
+      <button data-testid="trigger2" {...getTriggerProps()}>
         trigger 2
       </button>
-      <button data-testid="trigger-with-id" {...triggerProps('foobar')}>
+      <button data-testid="trigger-with-id" {...getTriggerProps('foobar')}>
         trigger with id
       </button>
       <button
         data-testid="trigger-with-background"
-        {...triggerProps({
+        {...getTriggerProps({
           background: 'purple',
         })}
       >
@@ -48,7 +48,7 @@ const App: React.FC<AppProps> = ({
       </button>
       <button
         data-testid="trigger-with-callback"
-        {...triggerProps({
+        {...getTriggerProps({
           onOpen: mockOnOpen || noop,
           onClose: mockOnClose || noop,
         })}
@@ -57,7 +57,7 @@ const App: React.FC<AppProps> = ({
       </button>
       <button
         data-testid="trigger-with-double-click"
-        {...triggerProps({ event: 'onDoubleClick' })}
+        {...getTriggerProps({ event: 'onDoubleClick' })}
       >
         trigger with double click
       </button>
