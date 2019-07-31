@@ -3,7 +3,7 @@ $transition-duration: 0.365s;
 
 // generate z-index per component
 $base-z-index: 9999;
-$component-list: placeholder body closeButton;
+$component-list: container body closeButton;
 $z-index: ();
 
 @each $component in $component-list {
