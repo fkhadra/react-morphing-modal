@@ -20,13 +20,13 @@
     - [Use different trigger for the same modal](#Use-different-trigger-for-the-same-modal)
     - [Attribute an id to the trigger](#Attribute-an-id-to-the-trigger)
     - [Define onOpen and onClose callback](#Define-onOpen-and-onClose-callback)
-      - [Gloabaly](#Gloabaly)
+      - [Globally](#Globally)
       - [Per trigger](#Per-trigger)
     - [Define background](#Define-background)
-      - [Gloabaly](#Gloabaly-1)
+      - [Globally](#Globally-1)
       - [Per trigger](#Per-trigger-1)
     - [Use another event to trigger the modal](#Use-another-event-to-trigger-the-modal)
-      - [Gloabaly](#Gloabaly-2)
+      - [Globally](#Globally-2)
       - [Per trigger](#Per-trigger-2)
     - [Hide the close button](#Hide-the-close-button)
     - [Remove body padding](#Remove-body-padding)
@@ -64,7 +64,7 @@ $ yarn add react-morphing-modal
 
 ## Usage
 
-> The library expose 2 ways to display the modal: `getTriggerProps` and `open`. For the basic use case `getTriggerProps` is fine. But for most of the cases
+> The library exposes 2 ways to display the modal: `getTriggerProps` and `open`. For the basic use case `getTriggerProps` is fine. But for most of the cases
 > using `open` is the way to go. Please look at the api for more details.
 
 ### Basic example
@@ -115,7 +115,7 @@ function App() {
 
 #### Real app use case
 
-Most of the time you need to perform different task when a user click a button like calling an api. In that case
+Most of the time you need to perform different task when a user clicks a button like calling an api. In that case
 use the `open` method as follow.
 
 ```javascript
@@ -200,7 +200,7 @@ function App() {
 
 ### Define onOpen and onClose callback
 
-#### Gloabaly
+#### Globally
 
 ```javascript
 import React from 'react';
@@ -256,7 +256,7 @@ function App() {
 
 By default, the modal background is the same as the trigger one. However, you are free to define yours.
 
-#### Gloabaly
+#### Globally
 
 ```javascript
 import React from 'react';
@@ -306,7 +306,7 @@ function App() {
 
 By default, the `onClick` event is used on the trigger.
 
-#### Gloabaly
+#### Globally
 
 ```javascript
 import React from 'react';
@@ -420,7 +420,7 @@ const { open, close, activeModal, modalProps, getTriggerProps } = useModal({
 
 #### open
 
-`open` have 2 signatures
+`open` has 2 signatures
 
 ```js
 import { useModal } from 'react-morphing-modal';
@@ -462,7 +462,7 @@ close();
 
 #### activeModal
 
-`activeModal` hold the displayed modalId. `activeModal` is set to `null` if not id has been used.
+`activeModal` holds the displayed modalId. `activeModal` is set to `null` if id has not been used.
 
 ```js
 import { useModal } from 'react-morphing-modal';
@@ -470,12 +470,12 @@ import { useModal } from 'react-morphing-modal';
 const { open, activeModal } = useModal();
 
 open(triggerRef, 'modalId');
-console, log(activeModal); // print modalId
+console.log(activeModal); // print modalId
 ```
 
 #### modalProps
 
-`modalProps` hold the props that must be passed to the Modal component.
+`modalProps` holds the props that must be passed to the Modal component.
 
 ```js
 import { useModal, Modal } from 'react-morphing-modal';
